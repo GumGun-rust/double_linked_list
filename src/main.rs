@@ -28,18 +28,18 @@ fn main() {
     
 
     let mut dstr = Head::new();
-    dstr.add(12);
+    dstr.add(1);
+    dstr.add(2);
+    dstr.add(3);
     /*
     {
         let mut option = hola.next.borrow_mut();
         option.as_mut().unwrap().push('2');
     }
     */
-    println!("{:#?}", &head);
-    println!("{:#?}", &dstr);
+    //println!("{:#?}", &dstr);
     panic!();
 }
-
 
 impl Head{
     fn new() -> Self{
@@ -47,21 +47,44 @@ impl Head{
     }
 
     fn add(&mut self, content:u64) -> Result<(), ()> {
-        println!("{:?}", self);
+        let mut holder = Box::new(Node{content:content, prev:None, next:None});
         match &self.head {
-            Some(_) => {
-                panic!();
+            Some(next_node) => {
+                holder.prev = Some(self.tail.as_ref().unwrap().clone());
+                {
+                    let mut tail_mut_ref = self.tail.as_ref().unwrap().borrow_mut();
+                    tail_mut_ref.content = tail_mut_ref.content+1; 
+                    tail_mut_ref.next = Some(Rc::new(RefCell::new(holder)));
+                }
+                Ok(())
                 
             },
             None => {
-                let holder = Box::new(Node{content:content, prev:None, next:None});
-                let holder = Some(Rc::new(RefCell::new(holder)));
-                self.head = holder;
+                let holder = Rc::new(RefCell::new(holder));
+                self.head = Some(holder.clone());
+                self.tail = Some(holder);
                 Ok(())
             }
         }
     }
     
+    fn get_last(&self) -> &Option<Rc<RefCell<Box<Node>>>> {
+        let pivot = &self.head;
+        loop{
+            match pivot {
+                Some(_) => {
+                    panic!();
+                },
+                None => {
+                    panic!();
+                    break;
+                }
+            }
+            println!("mamahuevo ----------");
+            break;
+        }
+        &self.head
+    }
 }
 
 
